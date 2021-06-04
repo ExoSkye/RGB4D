@@ -99,8 +99,10 @@ int main() {
         changedY = ImGui::SliderScalar("Y",ImGuiDataType_U8,&curPos.y,&min, &max, "%d");
         changedZ = ImGui::SliderScalar("Z",ImGuiDataType_U8,&curPos.z,&min, &max, "%d");
         changedW = ImGui::SliderScalar("W",ImGuiDataType_U8,&curPos.w,&min, &max, "%d");
-        if ((changedX || changedY || changedZ || changedW) && (interp.space.size()-1 <= curPos.w)) {
-                    curColour = interp.space[curPos.w][curPos.x][curPos.y][curPos.z];
+        if ((changedX || changedY || changedZ || changedW) && (curPos.w < interp.space.size())) {
+            printf("%zu %d %d\n",interp.space.size(),curPos.w,(curPos.w < interp.space.size()));
+            curColour = interp.space[curPos.w][curPos.x][curPos.y][curPos.z];
+
         }
         if(ImGui::Button("Add W Plane")) {
             interp.space.push_back(plane{});
@@ -125,7 +127,7 @@ int main() {
 
         SDL_GL_SwapWindow(window);
 
-        if (interp.space.size()-1 <= curPos.w) {
+        if (curPos.w < interp.space.size()) {
             interp.space[curPos.w][curPos.x][curPos.y][curPos.z] = curColour;
         }
     }
