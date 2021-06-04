@@ -22,11 +22,16 @@ public:
     std::string filename;
     int iteration = 0;
 
-    interpreter() = delete;
-    explicit interpreter(std::string& _filename) {
+    void init(std::string& _filename) {
         filename = _filename;
         readFromFile(space,filename);
     }
+
+    explicit interpreter(std::string& _filename) {
+        init(filename);
+    }
+
+    interpreter() = default;
 
     void step() {
         runInst(space[PC.w][PC.x][PC.y][PC.z],A,CellPtr,cells,curDirection,running,functions,def_function,PC,retLocation,retDirection);

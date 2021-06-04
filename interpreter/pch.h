@@ -14,6 +14,8 @@
 #include <cinttypes>
 #include <random>
 #include <map>
+#include <filesystem>
+#include <sstream>
 
 struct Colour {
     uint8_t r;
@@ -30,6 +32,13 @@ struct Colour {
         g = _g;
         b = _b;
         a = _a;
+    }
+
+    Colour() {
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 0;
     }
 };
 
@@ -117,5 +126,7 @@ struct Coord {
 int getIndex(Coord coord) {
     return coord.x + (coord.y * 16) + (coord.z*16*16);
 }
+
+typedef std::array<std::array<std::array<Colour,16>,16>,16> plane;
 
 #endif //PPEN_PCH_H
