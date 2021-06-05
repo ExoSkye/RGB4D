@@ -4,11 +4,44 @@
 
 #include <SDL.h>
 #include <GL/glew.h>
+#include <GL/glu.h>
 #include <imgui.h>
 #include <imgui_impl_sdl.h>
 #include <imgui_impl_opengl3.h>
 #include <lib.h>
 #include <nfd.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "cube.h"
+
+bool checkOpenGLError()
+{
+    bool foundError = false;
+    int glErr = glGetError();
+    while (glErr != GL_NO_ERROR)
+    {
+       printf("glError: %s",gluErrorString(glErr));
+       foundError = true;
+       glErr = glGetError();
+    }
+    return foundError;
+}
+
+void printShaderLog(GLuint shader)
+{
+    int len = 0;
+    int chWrittn = 0;
+    char *log;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+    if (len > 0)
+    {
+        log = (char *)malloc(len);
+        glGetShaderInfoLog(shader, len, &chWrittn, log);
+        printf("Shader Info Log: %s",log);
+        free(log);
+    }
+}
 
 int main() {
     interpreter interp;
@@ -17,8 +50,8 @@ int main() {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
@@ -37,7 +70,7 @@ int main() {
 
     ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForOpenGL(window,glContext);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 430");
 
     bool running = true;
 
@@ -46,6 +79,72 @@ int main() {
 
     uint8_t min, max;
 
+    // Shaders
+
+    GLuint vert, frag, shader;
+
+    vert = glCreateShader(GL_VERTEX_SHADER);
+    frag = glCreateShader(GL_FRAGMENT_SHADER);
+
+    const std::string vertStr =
+#include "vert.glsl.h"
+            ;
+
+    const std::string fragStr =
+#include "frag.glsl.h"
+            ;
+
+    const char* vertCStr = vertStr.c_str();
+    const char* fragCStr = fragStr.c_str();
+
+    glShaderSource(vert,1,&vertCStr,nullptr);
+    glShaderSource(frag,1,&fragCStr,nullptr);
+
+    glCompileShader(vert);
+
+#ifdef _DEBUG
+    printShaderLog(vert);
+#endif
+
+    glCompileShader(frag);
+
+#ifdef _DEBUG
+    printShaderLog(frag);
+#endif
+
+    shader = glCreateProgram();
+    glAttachShader(shader,vert);
+    glAttachShader(shader,frag);
+    glLinkProgram(shader);
+
+    glUseProgram(shader);
+
+    checkOpenGLError();
+
+    GLuint vao[1];
+    GLuint vbo[1];
+
+    glGenVertexArrays(1,vao);
+    glBindVertexArray(vao[0]);
+    glGenBuffers(1,vbo);
+
+    glBindBuffer(GL_ARRAY_BUFFER,vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER,sizeof(cubePositions),cubePositions,GL_STATIC_DRAW);
+
+    glm::mat4 pMat, vMat, mMat, mvMat;
+    GLuint mvLoc, projLoc, color;
+    glm::vec3 cameraPos{0,0,8};
+
+    mvLoc = glGetUniformLocation(shader,"mv_matrix");
+    projLoc = glGetUniformLocation(shader,"proj_matrix");
+    color = glGetUniformLocation(shader,"inColor");
+
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+    glViewport(0, 0, w, h);
+    pMat = glm::perspective(1.0472f,(float)w/(float)h,0.1f,1000.0f);
+
+    checkOpenGLError();
     while (running) {
         // Input
 
@@ -54,23 +153,72 @@ int main() {
             switch (e.type) {
                 case SDL_KEYDOWN:
                     switch(e.key.keysym.sym) {
-                        case SDLK_ESCAPE:
-                            running = false;
+                        case SDLK_w:
+                            cameraPos.x++;
+                            break;
+                        case SDLK_s:
+                            cameraPos.x--;
+                            break;
+                        case SDLK_a:
+                            cameraPos.y++;
+                            break;
+                        case SDLK_d:
+                            cameraPos.y--;
+                            break;
+                        case SDLK_SPACE:
+                            cameraPos.z++;
+                            break;
+                        case SDLK_LSHIFT:
+                            cameraPos.z--;
                             break;
                     }
+                    printf("%f %f %f",cameraPos.x,cameraPos.y,cameraPos.z);
+                    break;
 
                 case SDL_QUIT:
                     running = false;
                     break;
+
+                case SDL_WINDOWEVENT_RESIZED:
+                    SDL_GetWindowSize(window, &w, &h);
+                    glViewport(0, 0, w, h);
+                    pMat = glm::perspective(1.0472f,(float)w/(float)h,0.1f,1000.0f);
             }
         }
 
-        int w, h;
-        SDL_GetWindowSize(window, &w, &h);
-        glViewport(0, 0, w, h);
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        checkOpenGLError();
+
+        vMat = glm::translate(glm::mat4(1.0f),-cameraPos);
+        //vMat = glm::rotate(vMat,glm::radians(45.0f),glm::vec3(0,1,1));
+        if (curPos.w < interp.space.size()) {
+            for (int x = 0; x < 16; x++) {
+                for (int y = 0; y < 16; y++) {
+                    for (int z = 0; z < 16; z++) {
+                        glm::vec3 position{x * 1.5, y * 1.5, z * 1.5};
+                        Colour colorVal = interp.space[curPos.w][x][y][z];
+                        mMat = glm::translate(glm::mat4(1.0f), position);
+                        mvMat = vMat * mMat;
+                        glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
+                        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
+                        glm::vec4 glmColour = glm::vec4((float) colorVal.r / 255.0f, (float) colorVal.g / 255.0f,
+                                                        (float) colorVal.b / 255.0f, (float) colorVal.a / 255.0f);
+                        glUniform4fv(color, 1, glm::value_ptr(glmColour));
+
+                        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(0);
+
+                        glEnable(GL_DEPTH_TEST);
+                        glDepthFunc(GL_LEQUAL);
+                        glDrawArrays(GL_TRIANGLES, 0, 36);
+                        checkOpenGLError();
+                    }
+                }
+            }
+        }
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
@@ -100,7 +248,6 @@ int main() {
         changedZ = ImGui::SliderScalar("Z",ImGuiDataType_U8,&curPos.z,&min, &max, "%d");
         changedW = ImGui::SliderScalar("W",ImGuiDataType_U8,&curPos.w,&min, &max, "%d");
         if ((changedX || changedY || changedZ || changedW) && (curPos.w < interp.space.size())) {
-            printf("%zu %d %d\n",interp.space.size(),curPos.w,(curPos.w < interp.space.size()));
             curColour = interp.space[curPos.w][curPos.x][curPos.y][curPos.z];
 
         }
@@ -130,6 +277,8 @@ int main() {
         if (curPos.w < interp.space.size()) {
             interp.space[curPos.w][curPos.x][curPos.y][curPos.z] = curColour;
         }
+
+        checkOpenGLError();
     }
 
     ImGui_ImplOpenGL3_Shutdown();

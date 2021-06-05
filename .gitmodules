@@ -10,3 +10,6 @@
 [submodule "ide/libs/nativefiledialog-protobyter"]
 	path = ide/libs/nativefiledialog-protobyter
 	url = https://github.com/ProtoByter/nativefiledialog-cmake
+[submodule "ide/libs/glm"]
+	path = ide/libs/glm
+	url = https://github.com/g-truc/glm.git
