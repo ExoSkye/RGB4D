@@ -6,10 +6,11 @@ out vec4 color;
 uniform mat4 mv_matrix;
 uniform mat4 proj_matrix;
 uniform vec4 inColor;
+in vec4 varyingColor;
 
 void main(void)
 {
     //color = inColor;
-    color = vec4(1.0f,0.0f,0.0f,1.0f);
+    color = varyingColor;
 }
 )"

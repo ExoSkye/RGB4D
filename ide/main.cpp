@@ -133,7 +133,8 @@ int main() {
 
     glm::mat4 pMat, vMat, mMat, mvMat;
     GLuint mvLoc, projLoc, color;
-    glm::vec3 cameraPos{0,0,8};
+    glm::vec3 cameraPos{125,165,-80};
+    glm::vec3 cameraRotation{45,45,0};
 
     mvLoc = glGetUniformLocation(shader,"mv_matrix");
     projLoc = glGetUniformLocation(shader,"proj_matrix");
@@ -154,22 +155,28 @@ int main() {
                 case SDL_KEYDOWN:
                     switch(e.key.keysym.sym) {
                         case SDLK_w:
-                            cameraPos.x++;
+                            cameraPos.z+=0.1f;
                             break;
                         case SDLK_s:
-                            cameraPos.x--;
+                            cameraPos.z-=0.1f;
                             break;
                         case SDLK_a:
-                            cameraPos.y++;
+                            cameraPos.x+=0.1f;
                             break;
                         case SDLK_d:
-                            cameraPos.y--;
+                            cameraPos.x-=0.1f;
                             break;
-                        case SDLK_SPACE:
-                            cameraPos.z++;
+                        case SDLK_UP:
+                            cameraPos.y+=0.1f;
                             break;
-                        case SDLK_LSHIFT:
-                            cameraPos.z--;
+                        case SDLK_DOWN:
+                            cameraPos.y-=0.1f;
+                            break;
+                        case SDLK_LEFT:
+                            cameraRotation.z++;
+                            break;
+                        case SDLK_RIGHT:
+                            cameraRotation.z--;
                             break;
                     }
                     printf("%f %f %f",cameraPos.x,cameraPos.y,cameraPos.z);
@@ -192,7 +199,9 @@ int main() {
         checkOpenGLError();
 
         vMat = glm::translate(glm::mat4(1.0f),-cameraPos);
-        //vMat = glm::rotate(vMat,glm::radians(45.0f),glm::vec3(0,1,1));
+        vMat = glm::rotate(vMat,glm::radians(cameraRotation.z),glm::vec3(0,0,1));
+        vMat = glm::rotate(vMat,glm::radians(cameraRotation.y),glm::vec3(0,1,0));
+        vMat = glm::rotate(vMat,glm::radians(cameraRotation.x),glm::vec3(1,0,0));
         if (curPos.w < interp.space.size()) {
             for (int x = 0; x < 16; x++) {
                 for (int y = 0; y < 16; y++) {
