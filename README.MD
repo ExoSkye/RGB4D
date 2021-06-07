@@ -1,4 +1,4 @@
-# PPEN
+# RGB4D
 ## About
 
 A 4d esoteric programming language
