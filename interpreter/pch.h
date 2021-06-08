@@ -91,6 +91,11 @@ struct Coord {
     uint8_t y;
     uint8_t z;
     uint32_t w;
+    
+    Coord(uint8_t _x, uint8_t _y, uint8_t _z, uint32_t _w) {
+        set(_x,_y,_z,_w);
+    }
+    
     void set(uint8_t _x, uint8_t _y, uint8_t _z, uint32_t _w) {
         setx(_x);
         sety(_y);
