@@ -87,7 +87,8 @@ curLocation = functions[A];
 direction.set(1,0,0,0))
 INST_END()
 INST_START(Colour(0,0,0,255))
-INST_PRG(functions[A] = Coord{static_cast<uint8_t>(curLocation.x)+static_cast<uint8_t>(1),curLocation.y,curLocation.z,curLocation.w};
+INST_PRG(functions[A] = curLocation;
+functions[A].setx(functions[A].x+1);
 direction.set(1,0,0,0);
 def_function = true)
 INST_END()
