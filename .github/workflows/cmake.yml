@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Create Build Tag
       run: |
-        export BUILD_TAG=build-$(date -u +'%Y%m%d%H%M')
+        export BUILD_TAG=build-$GITHUB_SHA
         echo "BUILD_TAG=$BUILD_TAG" >> $GITHUB_ENV
         echo -n $BUILD_TAG > tag
     - name: Upload Artifacts
