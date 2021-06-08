@@ -80,14 +80,15 @@ INST_START(Colour(191,255,0,255))
 INST_PRG(if (A != cells[CellPtr]) direction.set(1,0,0,0); else direction.set(-1,0,0,0))
 INST_END()
 INST_START(Colour(255,255,255,255))
-INST_PRG(retLocation = Coord{curLocation.x,curLocation.y,curLocation.z,curLocation.w};
+INST_PRG(retLocation = curLocation;
 retLocation.update(direction);
 retDirection = direction;
 curLocation = functions[A];
 direction.set(1,0,0,0))
 INST_END()
 INST_START(Colour(0,0,0,255))
-INST_PRG(functions[A] = Coord{curLocation.x+1,curLocation.y,curLocation.z,curLocation.w};
+INST_PRG(functions[A] = curLocation;
+functions[A].setx(functions[A].x+1);
 direction.set(1,0,0,0);
 def_function = true)
 INST_END()
