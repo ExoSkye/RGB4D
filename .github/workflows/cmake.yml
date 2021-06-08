@@ -55,17 +55,17 @@ jobs:
       
     - name: Rename ouptut file (Windows)
       if: matrix.os == 'windows-latest'
-      run: cmake -E rename ${{github.workspace}}/build/PPEN_Interpreter.exe ${{github.workspace}}/build/PPEN_Interpreter_Windows_${{ matrix.build_type }}.exe
+      run: cmake -E rename ${{github.workspace}}/build/RGB4D_Interpreter.exe ${{github.workspace}}/build/RGB4D_Interpreter_Windows_${{ matrix.build_type }}.exe
       
     - name: Rename ouptut file (Linux)
       if: matrix.os == 'ubuntu-latest'
-      run: cmake -E rename ${{github.workspace}}/build/PPEN_Interpreter ${{github.workspace}}/build/PPEN_Interpreter_Linux_${{ matrix.build_type }}
+      run: cmake -E rename ${{github.workspace}}/build/RGB4D_Interpreter ${{github.workspace}}/build/RGB4D_Interpreter_Linux_${{ matrix.build_type }}
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.3
       with:
         name: ${{ matrix.os }}_${{ matrix.build_type }}
-        path: PPEN_Interpreter*
+        path: ${{github.workspace}}/build/RGB4D_Interpreter*
       
   Release:
     name: Release
@@ -98,8 +98,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_name: PPEN_Interpreter_Windows_Debug.exe
-        asset_path: dist/windows-latest_Debug/PPEN_Interpreter_Windows_Debug.exe
+        asset_name: RGB4D_Interpreter_Windows_Debug.exe
+        asset_path: dist/windows-latest_Debug/RGB4D_Interpreter_Windows_Debug.exe
         asset_content_type: application/vnd.microsoft.portable-executable
     - name: Upload Release Assets (Windows Release Build)
       id: upload-release-asset-win-release
@@ -108,8 +108,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_name: PPEN_Interpreter_Windows_Release.exe
-        asset_path: dist/windows-latest_Release/PPEN_Interpreter_Windows_Release.exe
+        asset_name: RGB4D_Interpreter_Windows_Release.exe
+        asset_path: dist/windows-latest_Release/RGB4D_Interpreter_Windows_Release.exe
         asset_content_type: application/vnd.microsoft.portable-executable
         
     - name: Upload Release Assets (Linux Debug Build)
@@ -119,8 +119,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_name: PPEN_Interpreter_Linux_Debug
-        asset_path: dist/ubuntu-latest_Debug/PPEN_Interpreter_Linux_Debug
+        asset_name: RGB4D_Interpreter_Linux_Debug
+        asset_path: dist/ubuntu-latest_Debug/RGB4D_Interpreter_Linux_Debug
         asset_content_type: application/x-executable
     - name: Upload Release Assets (Linux Release Build)
       id: upload-release-asset-linux-release
@@ -129,8 +129,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_name: PPEN_Interpreter_Linux_Release
-        asset_path: dist/ubuntu-latest_Release/PPEN_Interpreter_Linux_Release
+        asset_name: RGB4D_Interpreter_Linux_Release
+        asset_path: dist/ubuntu-latest_Release/RGB4D_Interpreter_Linux_Release
         asset_content_type: application/x-executable
     
 
