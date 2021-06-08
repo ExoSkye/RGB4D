@@ -54,11 +54,11 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
       
     - name: Rename ouptut file (Windows)
-      if: ${{ matrix.os == windows-latest }}
+      if: ${{ matrix.os == "windows-latest" }}
       run: cmake -E rename ${{github.workspace}}/build/PPEN_Interpreter.exe ${{github.workspace}}/build/PPEN_Interpreter_Windows_${{ matrix.build_type }}.exe
       
     - name: Rename ouptut file (Linux)
-      if: ${{ matrix.os == ubuntu-latest }}
+      if: ${{ matrix.os == "ubuntu-latest" }}
       run: cmake -E rename ${{github.workspace}}/build/PPEN_Interpreter ${{github.workspace}}/build/PPEN_Interpreter_Linux_${{ matrix.build_type }}
       
     - name: Upload a Build Artifact
