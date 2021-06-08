@@ -55,7 +55,9 @@ jobs:
       
     - name: Rename ouptut file (Windows)
       if: matrix.os == 'windows-latest'
-      run: cmake -E rename ${{github.workspace}}/build/RGB4D_Interpreter.exe ${{github.workspace}}/build/RGB4D_Interpreter_Windows_${{ matrix.build_type }}.exe
+      run: |
+        cmake -E copy ${{github.workspace}}\\build\\${{ matrix.build_type }}\\RGB4D_Interpreter.exe ${{github.workspace}}\\build\\RGB4D_Interpreter.exe
+        cmake -E rename ${{github.workspace}}\\build\\RGB4D_Interpreter.exe ${{github.workspace}}\\build\\RGB4D_Interpreter_Windows_${{ matrix.build_type }}.exe
       
     - name: Rename ouptut file (Linux)
       if: matrix.os == 'ubuntu-latest'
