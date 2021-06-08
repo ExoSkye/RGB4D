@@ -56,14 +56,14 @@ RGB4D uses a cell based storage system (with a cell pointer and 256 uint16_t cel
 
 Functions are specified by a number, which is usually passed as A.
 The parameters for a function should be in the cells including and after the cell denoted by the cell pointer.
-Functions may also be loaded from an ELF or DLL library (NOTE: This feature isn't required and thus won't be in all interpreters that are made)
+Functions may also be loaded from an ELF or DLL library (NOTE: This feature isn't required and thus won't be in all interpreters that are made).
 If a function is loaded from a library then it is numbered as the function's number in that library but with 10000 (This number isn't meaningful in any way, it's just arbritary) added to it.
 
 ### Rules
 
 For storage see [storage notes](#storage-notes)
 
-X, Y and Z are all limited to having a max value of 16
+X, Y and Z are all limited to having a max value of 16.
 W is limited by the maximum unsigned byte that the target can support (so for a 64bit CPU it'd be 2^64 whilst for an 8bit CPU it'd be limited to 256)
 
 ## This interpreter
