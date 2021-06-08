@@ -98,7 +98,7 @@ direction = retDirection)
 INST_END()
 INST_START(Colour(255,127,255,255))
 INST_PRG(printf("> ");
-scanf("%c",(char*)&A))
+scanf("%c\n",(char*)&A))
 INST_END()
 INST_START(Colour(255,0,255,255))
 INST_PRG(printf("%c",(char)A))
