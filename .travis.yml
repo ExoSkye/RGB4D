@@ -12,6 +12,7 @@ matrix:
       arch: 
         - arm64
         - ppc64le
+        - amd64
 
 compiler:
   - gcc
