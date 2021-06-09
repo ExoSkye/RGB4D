@@ -1,0 +1,32 @@
+language: cpp
+cache: ccache
+matrix:
+  include:
+    - os: linux
+      dist: focal
+      arch: 
+        - arm64
+        - s390x
+        - ppc64le
+    - os: freebsd
+      arch: 
+        - arm64
+        - ppc64le
+        - amd64
+
+compiler:
+  - gcc
+  - clang
+
+before_script:
+  # create a build folder for the out-of-source build
+  - mkdir build
+  # switch to build directory
+  - cd build
+  # run cmake; here we assume that the project's
+  # top-level CMakeLists.txt is located at '..'
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_IDE=OFF
+
+script:
+  # once CMake has done its job we just build using make as usual
+  - make -j2
