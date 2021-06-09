@@ -30,7 +30,10 @@ int main(int argc, char** argv) {
     while(running) {
         runInst(space[PC.w][PC.x][PC.y][PC.z],A,CellPtr,cells,curDirection,running,functions,def_function,PC,retLocation,retDirection);
         if (verbose) {
-            printf("Debug Output for iteration %i\nPosition: (%i,%i,%i,%i)\nCurrent Colour: (%i,%i,%i,%i)\n",iteration,PC.x,PC.y,PC.z,PC.w,space[PC.w][PC.x][PC.y][PC.z].r,space[PC.w][PC.x][PC.y][PC.z].g,space[PC.w][PC.x][PC.y][PC.z].b,space[PC.w][PC.x][PC.y][PC.z].a);
+            printf("Debug Output for iteration %i\nPosition: (%i,%i,%i,%i)\nCurrent Colour: (%i,%i,%i,%i)\nCurrent A: %i\nCurrent cell value: %i\n",
+                   iteration,PC.x,PC.y,PC.z,PC.w,
+                   space[PC.w][PC.x][PC.y][PC.z].r,space[PC.w][PC.x][PC.y][PC.z].g,space[PC.w][PC.x][PC.y][PC.z].b,space[PC.w][PC.x][PC.y][PC.z].a,
+                   A,cells[CellPtr]);
         }
         if (!running) {
             break;
