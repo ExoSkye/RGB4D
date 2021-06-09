@@ -16,6 +16,7 @@
 #include <map>
 #include <filesystem>
 #include <sstream>
+#include <functional>
 
 struct Colour {
     uint8_t r;
@@ -23,8 +24,20 @@ struct Colour {
     uint8_t b;
     uint8_t a;
 
-    bool operator==(Colour other) const {
-        return other.r == r && other.g == g && other.b == b && other.a == a;
+    static int getHex(Colour inColour) {
+        return inColour.r | inColour.g << 8 | inColour.b << 16 | inColour.a << 24;
+    }
+
+    bool operator==(const Colour other) const {
+        return getHex(*this) == getHex(other);
+    }
+
+    bool operator<(const Colour other) {
+        return getHex(*this) < getHex(other);
+    }
+
+    bool operator>(const Colour other) {
+        return getHex(*this) > getHex(other);
     }
 
     Colour(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a) {
@@ -39,6 +52,15 @@ struct Colour {
         g = 0;
         b = 0;
         a = 0;
+    }
+};
+
+struct ColourCompare {
+    static int getHex(Colour inColour) {
+        return inColour.r | inColour.g << 8 | inColour.b << 16 | inColour.a << 24;
+    }
+    bool operator() (const Colour& x, const Colour& y) const {
+        return getHex(x) < getHex(y);
     }
 };
 

@@ -8,10 +8,10 @@
 #include "pch.h"
 
 void readFromFile(std::vector<plane>& space, std::string& filename) {
-    if (!std::filesystem::exists(std::filesystem::path(filename))) {
-        printf("ERROR: Couldn't open file\nReason: File not found");
-        exit(1);
-    }
+    //if (!std::filesystem::exists(std::filesystem::path(filename))) {
+    //    printf("ERROR: Couldn't open file\nReason: File not found");
+    //    exit(1);
+    //}
     std::fstream file;
     file.exceptions(std::ifstream::badbit);
     try {
