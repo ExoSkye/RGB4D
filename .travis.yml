@@ -33,6 +33,9 @@ matrix:
     - os: freebsd
       arch: amd64
 
+env:
+  - BUILD_NAME="RGB4D_Interpreter_$TRAVIS_OS_NAME_$TRAVIS_CPU_ARCH_$TRAVIS_COMPILER_Release"
+
 before_script:
   # create a build folder for the out-of-source build
   - mkdir build
@@ -45,4 +48,5 @@ before_script:
 script:
   # once CMake has done its job we just build using make as usual
   - make -j2
-  - mv RGB4D_Interpreter RGB4D_Interpreter_$TRAVIS_OS_NAME_$TRAVIS_CPU_ARCH_$TRAVIS_COMPILER_Release
+  - echo RGB4D_Interpreter_$TRAVIS_OS_NAME_$TRAVIS_CPU_ARCH_$TRAVIS_COMPILER_Release
+  - mv RGB4D_Interpreter $BUILD_NAME
