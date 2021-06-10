@@ -45,3 +45,4 @@ before_script:
 script:
   # once CMake has done its job we just build using make as usual
   - make -j2
+  - mv RGB4D_Interpreter RGB4D_Interpreter_$TRAVIS_OS_NAME_$TRAVIS_CPU_ARCH_$TRAVIS_COMPILER_Release
