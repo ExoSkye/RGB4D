@@ -1,0 +1,57 @@
+language: cpp
+cache: ccache
+matrix:
+  include:
+    - os: linux
+      dist: focal
+      arch: arm64
+      compiler: gcc
+      env: BUILD_NAME=RGB4D_Intepreter_Linux_arm64_gcc_Release
+    - os: linux
+      dist: focal
+      arch: s390x
+      compiler: gcc
+      env: BUILD_NAME=RGB4D_Intepreter_Linux_s390x_gcc_Release
+    - os: linux
+      dist: focal
+      arch: ppc64le
+      compiler: gcc
+      env: BUILD_NAME=RGB4D_Intepreter_Linux_ppc64le_gcc_Release
+    - os: linux
+      dist: focal
+      arch: arm64
+      compiler: clang
+      env: BUILD_NAME=RGB4D_Intepreter_Linux_arm64_clang_Release
+    - os: linux
+      dist: focal
+      arch: s390x
+      compiler: clang
+      env: BUILD_NAME=RGB4D_Intepreter_Linux_s390x_clang_Release
+    - os: linux
+      dist: focal
+      arch: ppc64le
+      compiler: clang
+      env: BUILD_NAME=RGB4D_Intepreter_Linux_ppc64le_clang_Release
+    - os: freebsd
+      arch: arm64
+      env: BUILD_NAME=RGB4D_Intepreter_Freebsd_arm64_gcc_Release
+    - os: freebsd
+      arch: ppc64le
+      env: BUILD_NAME=RGB4D_Intepreter_Freebsd_ppc64le_gcc_Release
+    - os: freebsd
+      arch: amd64
+      env: BUILD_NAME=RGB4D_Intepreter_Freebsd_amd64_gcc_Release
+
+before_script:
+  # create a build folder for the out-of-source build
+  - mkdir build
+  # switch to build directory
+  - cd build
+  # run cmake; here we assume that the project's
+  # top-level CMakeLists.txt is located at '..'
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_IDE=OFF
+
+script:
+  # once CMake has done its job we just build using make as usual
+  - make -j2
+  - mv RGB4D_Interpreter $BUILD_NAME
