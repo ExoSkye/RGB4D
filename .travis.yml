@@ -42,6 +42,10 @@ matrix:
       arch: amd64
       env: BUILD_NAME=RGB4D_Intepreter_Freebsd_amd64_gcc_Release
 
+branches:
+  only:
+  - master
+
 before_script:
   # create a build folder for the out-of-source build
   - mkdir build
