@@ -53,7 +53,7 @@ before_script:
   - cd build
   # run cmake; here we assume that the project's
   # top-level CMakeLists.txt is located at '..'
-  - cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_IDE=OFF
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
 
 script:
   # once CMake has done its job we just build using make as usual
