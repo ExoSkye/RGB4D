@@ -80,21 +80,20 @@ INST_START(Colour(191,255,0,255))
 INST_PRG(if (A != cells[CellPtr]) direction.set(1,0,0,0); else direction.set(-1,0,0,0))
 INST_END()
 INST_START(Colour(255,255,255,255))
-INST_PRG(retLocation = curLocation;
-retLocation.update(direction);
-retDirection = direction;
+INST_PRG(funcStack.emplace(returnData{curLocation,direction});
+funcStack.top().location.update(direction);
 curLocation = functions[A];
 direction.set(1,0,0,0))
 INST_END()
 INST_START(Colour(0,0,0,255))
 INST_PRG(functions[A] = curLocation;
-functions[A].setx(functions[A].x+1);
 direction.set(1,0,0,0);
 def_function = true)
 INST_END()
 INST_START(Colour(255,0,0,255))
-INST_PRG(curLocation = retLocation;
-direction = retDirection)
+INST_PRG(curLocation = funcStack.top().location;
+direction = funcStack.top().direction;
+funcStack.pop())
 INST_END()
 INST_START(Colour(255,127,255,255))
 INST_PRG(printf("> ");
