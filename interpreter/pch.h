@@ -17,6 +17,7 @@
 #include <filesystem>
 #include <sstream>
 #include <functional>
+#include <stack>
 
 struct Colour {
     uint8_t r;
@@ -149,6 +150,11 @@ struct Coord {
 int getIndex(Coord coord) {
     return coord.x + (coord.y * 16) + (coord.z*16*16);
 }
+
+struct returnData {
+    Coord location;
+    Direction direction;
+};
 
 typedef std::array<std::array<std::array<Colour,16>,16>,16> plane;
 
