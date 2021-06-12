@@ -34,9 +34,21 @@ void readFromFile(std::vector<plane>& space, std::string& filename) {
             if (line[0] == 'I') {
                 char** end = nullptr;
                 uint8_t r, g, b, a, x, y, z, w;
-                sscanf(&line.c_str()[1]," %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 ,&r, &g, &b,&a, &x, &y,&z, &w);
+                char flags[8];
+                sscanf(&line.c_str()[1]," %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %3" SCNu8 " %s",&r, &g, &b,&a, &x, &y,&z, &w, flags);
                 Coord pos{x,y,z,w};
-                Colour colour{r,g,b,a};
+                uint8_t flagNum = (uint8_t)Flags::none;
+                for (char flag : flags) {
+                    switch(flag) {
+                        case 'b':
+                            flagNum |= (uint8_t)Flags::breakpoint;
+                            break;
+                        case 'e':
+                            flagNum |= (uint8_t)Flags::end;
+                            break;
+                    }
+                }
+                Instruction colour{r, g, b, a, flagNum};
                 space[pos.w][pos.x][pos.y][pos.z] = colour;
             }
         }

@@ -19,48 +19,65 @@
 #include <functional>
 #include <stack>
 
-struct Colour {
+enum Flags {
+    none = 0b0,
+    breakpoint = 0b1,
+    end = 0b01
+};
+
+struct Instruction {
     uint8_t r;
     uint8_t g;
     uint8_t b;
     uint8_t a;
+    uint8_t flags;
 
-    static int getHex(Colour inColour) {
+    static int getHex(Instruction inColour) {
         return inColour.r | inColour.g << 8 | inColour.b << 16 | inColour.a << 24;
     }
 
-    bool operator==(const Colour other) const {
+    bool operator==(const Instruction other) const {
         return getHex(*this) == getHex(other);
     }
 
-    bool operator<(const Colour other) {
+    bool operator<(const Instruction other) {
         return getHex(*this) < getHex(other);
     }
 
-    bool operator>(const Colour other) {
+    bool operator>(const Instruction other) {
         return getHex(*this) > getHex(other);
     }
 
-    Colour(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a) {
+    Instruction(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a, uint8_t _flags) {
         r = _r;
         g = _g;
         b = _b;
         a = _a;
+        flags = _flags;
     }
 
-    Colour() {
+    Instruction(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a) {
+        r = _r;
+        g = _g;
+        b = _b;
+        a = _a;
+        flags = 0;
+    }
+
+    Instruction() {
         r = 0;
         g = 0;
         b = 0;
         a = 0;
+        flags = 0;
     }
 };
 
 struct ColourCompare {
-    static int getHex(Colour inColour) {
+    static int getHex(Instruction inColour) {
         return inColour.r | inColour.g << 8 | inColour.b << 16 | inColour.a << 24;
     }
-    bool operator() (const Colour& x, const Colour& y) const {
+    bool operator() (const Instruction& x, const Instruction& y) const {
         return getHex(x) < getHex(y);
     }
 };
@@ -156,6 +173,6 @@ struct returnData {
     Direction direction;
 };
 
-typedef std::array<std::array<std::array<Colour,16>,16>,16> plane;
+typedef std::array<std::array<std::array<Instruction,16>,16>,16> plane;
 
 #endif //PPEN_PCH_H
